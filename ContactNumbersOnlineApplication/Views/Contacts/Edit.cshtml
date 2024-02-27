@@ -1,0 +1,108 @@
+﻿@model ContactNumbersOnlineApplication.Models.Contact
+
+@{
+    ViewData["Title"] = "Edit Contact";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+    <h4>Contact</h4>
+    <hr />
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form asp-action="Edit" method="post" id="editContactForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label">Name</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Phone" class="form-label">Phone</label>
+                    <input asp-for="Phone" class="form-control" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Address" class="form-label">Address</label>
+                    <input asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Notes" class="form-label">Notes</label>
+                    <textarea asp-for="Notes" class="form-control"></textarea>
+                    <span asp-validation-for="Notes" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a href="@Url.Action("Index")" class="btn btn-secondary">Back to List</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.11/signalr.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.11/signalr.min.js"></script>
+<script>
+$(document).ready(function() {
+    const contactId = @Model.Id; // Assuming you're in an Razor view with a model
+
+    // Lock contact
+    $("#lockButton").click(function() {
+        $.ajax({
+            url: '/contacts/Edit/' + contactId,
+            method: 'POST',
+            success: function() {
+                console.log("Contact locked");
+                // Optionally, update the UI to reflect the lock
+            }
+        });
+    });
+
+    // Unlock contact
+    $("#unlockButton").click(function() {
+        $.ajax({
+            url: '/contacts/Edit/' + contactId,
+            method: 'POST',
+            success: function() {
+                console.log("Contact unlocked");
+                // Optionally, update the UI to reflect the unlock
+            }
+        });
+    });
+});
+
+</script>
+
+<script>
+    connection.on("ContactLocked", function(contactId) {
+    if (contactId === @Model.Id) {
+        // Disable editing features, show a locked message, etc.
+        console.log("This contact is now locked.");
+    }
+});
+
+connection.on("ContactUnlocked", function(contactId) {
+    if (contactId === @Model.Id) {
+        // Enable editing features, hide the locked message, etc.
+        console.log("This contact is now unlocked.");
+    }
+});
+
+</script>
+
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

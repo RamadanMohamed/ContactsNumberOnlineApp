@@ -1,0 +1,30 @@
+﻿@model ContactNumbersOnlineApplication.Models.LoginViewModel
+
+<div class="container mt-4">
+    <form asp-action="Login" method="post">
+        <!-- Username Field -->
+        <div class="row">
+            <div class="col-6 col-md-3">
+                <label for="Username" class="form-label">Username</label>
+                <input asp-for="Username" class="form-control" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="row mb-3">
+            <div class="col-6 col-md-3">
+                <label for="Password" class="form-label">Password</label>
+                <input asp-for="Password" type="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="row">
+            <div class="col-md-6">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+        </div>
+    </form>
+</div>

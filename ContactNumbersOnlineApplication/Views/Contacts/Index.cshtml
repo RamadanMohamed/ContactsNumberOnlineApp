@@ -1,0 +1,94 @@
+﻿@model PaginatedList<ContactNumbersOnlineApplication.Models.Contact>
+
+@{
+    ViewData["Title"] = "Contacts List";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+
+    <!-- Create New Button -->
+    <p>
+        <a asp-action="Create" class="btn btn-success">Create New</a>
+    </p>
+
+    <!-- Search Form -->
+    <form asp-action="Index" method="get" class="mb-3">
+        <div class="row">
+            <div class="col-6 col-md-4">
+                <!-- Adjust the column sizes as needed -->
+                <input type="text" name="searchString" class="form-control form-control-sm" placeholder="Search by name">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary btn-sm">Search</button>
+            </div>
+        </div>
+    </form>
+
+
+    <!-- Contacts Table -->
+    <table class="table table-hover table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>@Html.DisplayNameFor(model => model[0].Name)</th>
+                <th>@Html.DisplayNameFor(model => model[0].Phone)</th>
+                <th>@Html.DisplayNameFor(model => model[0].Address)</th>
+                <th>@Html.DisplayNameFor(model => model[0].Notes)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Phone)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Address)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Notes)</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
+                        <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDelete('@item.Id')">Delete</a>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+  @* Pagination Links *@
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "" : "";
+    var nextDisabled = !Model.HasNextPage ? "" : "";
+}
+
+
+<a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-searchString="@ViewData["CurrentFilter"]" class="btn btn-default @prevDisabled">Previous</a>
+<a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-searchString="@ViewData["CurrentFilter"]" class="btn btn-default @nextDisabled">Next</a>
+
+<script>
+function confirmDelete(contactId) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // User clicked 'Yes', proceed with deletion
+            // Replace 'YourDeleteActionURL' with the URL to your controller's delete action
+                    window.location.href = '/Contacts/Delete/' + contactId;
+        }
+    });
+}
+</script>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
